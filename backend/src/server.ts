@@ -1,7 +1,7 @@
-import express from "express";
-const app = express();
+import io from "socket.io"
 const port = 3000;
+const server = io(port, {serveClient: false});
 
-app.get('/', (req: any, res: any) => res.send('Hello World!'));
-
-app.listen(port, () => console.log(`Example app listening on port ${port}!`));
+server.on("connection", (socket) => {
+    socket.emit("greeting", {greeting: `Hello ${Math.random()}`})
+});

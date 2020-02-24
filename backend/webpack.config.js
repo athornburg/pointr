@@ -1,6 +1,9 @@
 module.exports = {
     target: 'node',
     entry: __dirname + '/src/server.ts',
+    externals: {
+        uws: 'uws'
+    },
     node: {
         fs: "empty",
         net: "empty"
