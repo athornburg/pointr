@@ -14,7 +14,7 @@ var PATHS = {
 module.exports = {
     entry: __dirname + '/index.tsx',
     output: {
-        path: __dirname + '/dist/web',
+        path: __dirname + '/dist',
         filename: "[name].[chunkhash].js"
     },
     optimization: {
