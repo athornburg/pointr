@@ -12,7 +12,7 @@ describe("App", () => {
 
     beforeEach(async () => {
         conf.socketRoute = "http://localhost:3333";
-        server = io(3333, {transports: ["websocket", "polling"]});
+        server = io(3333, {transports: ["websocket"]});
 
         connection = new Promise((resolve) => {
             server

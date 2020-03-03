@@ -4,27 +4,33 @@ import io from "socket.io-client";
 import {conf} from "./config";
 import {Team} from "./team/Team";
 
-
-export const App = () => {
-    const socket: SocketIOClient.Socket = io(conf.socketRoute, {transports: ["websocket", "polling"]});
+const setupTeam = () => {
+    const [team, setTeam] = useState(false);
+    const socket: SocketIOClient.Socket = io(conf.socketRoute, {transports: ["websocket"]});
 
     socket.on("team-joined", (data: unknown, success: Function) => {
         setTeam(true);
-        success(true);
+        success && success(true);
     });
 
+    return {
+        joinTeam: (name: string) => {
+            if (socket) {
+                socket.emit("name-added", {name})
+            }
+        },
+        team
+    }
+};
+
+export const App = () => {
     const [name, setName] = useState(undefined);
-    const [team, setTeam] = useState(false);
 
     const saveName = (name: string) => {
         setName(name);
     };
 
-    const submitName = (name: string) => {
-        if (socket) {
-            socket.emit("name-added", {name})
-        }
-    };
+    const {joinTeam, team} = setupTeam();
 
     return <div>
         {team ?
@@ -32,11 +38,11 @@ export const App = () => {
             :
             <form className="save" onSubmit={(e) => {
                 e.preventDefault();
-                submitName(name);
+                joinTeam(name);
             }}>
                 <input className="name" onChange={(e) => saveName(e.target.value)}/>
                 <button onSubmit={(e) => {
-                    submitName(name);
+                    joinTeam(name);
                     e.preventDefault();
                 }}>Submit
                 </button>
