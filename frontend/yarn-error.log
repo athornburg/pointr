@@ -37,7 +37,7 @@ npm manifest:
     "license": "MIT",
     "scripts": {
       "test": "jest",
-      "start": "webpack-dev-server --mode development --config ./webpack.config.js"
+      "start": "webpack-dev-server --mode development --config ./webpack.config.ts"
     },
     "dependencies": {
       "react": "^16.12.0",

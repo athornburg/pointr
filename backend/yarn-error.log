@@ -36,8 +36,8 @@ npm manifest:
     "author": "Alex Thornburg",
     "license": "MIT",
     "scripts": {
-      "build": "webpack --mode production --config ./webpack.config.js",
-      "start": "webpack --mode production --config ./webpack.config.js && node dist/server.js"
+      "build": "webpack --mode production --config ./webpack.config.ts",
+      "start": "webpack --mode production --config ./webpack.config.ts && node dist/server.js"
     },
     "dependencies": {
       "express": "^4.17.1",
