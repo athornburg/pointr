@@ -7,6 +7,7 @@
   "author": "Alex Thornburg",
   "license": "MIT",
   "scripts": {
+    "test": "jest",
     "build": "webpack --mode production --config ./webpack.config.js",
     "start": "webpack --mode production --config ./webpack.config.js && node dist/server.js"
   },
@@ -22,8 +23,20 @@
     "@types/socket.io-client": "^1.4.32",
     "awesome-typescript-loader": "^5.2.1",
     "jest": "^25.1.0",
+    "ts-jest": "^25.2.1",
     "typescript": "^3.8.2",
     "webpack": "^4.41.6",
     "webpack-cli": "^3.3.11"
+  },
+  "jest": {
+    "transform": {
+      ".(ts|tsx)": "ts-jest"
+    },
+    "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(ts|tsx|js)$",
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js"
+    ]
   }
 }

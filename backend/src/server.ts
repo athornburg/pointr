@@ -1,9 +1,52 @@
-import io from "socket.io"
-const port = 3000;
-const server = io(port, {serveClient: false, transports: ["websocket", "polling"]});
+type NameToPointer = { [index: string]: number };
+let teamEstimates: NameToPointer = {};
 
-server.on("connection", (socket) => {
-    socket.on("name-added", () => {
-        socket.emit("team-joined", {team: true})
-    })
-});
+function consensusReached() {
+    let estimateSet: { [index: number]: number } = {};
+    Object.values(teamEstimates).forEach(estimate => {
+        estimateSet = {
+            ...estimateSet,
+            [estimate]: estimateSet[estimate] ? estimateSet[estimate]++ : 0,
+        }
+    });
+    return Object.keys(estimateSet).length === 1;
+}
+
+function allVotesAreIn() {
+    return !Object.values(teamEstimates).includes(null);
+}
+
+function joinTheTeam(msg: any, socket: SocketIO.Socket) {
+    teamEstimates = {
+        [msg.name]: null,
+        ...teamEstimates,
+    };
+    socket.emit("team-joined", teamEstimates)
+}
+
+function pointTheStory(msg: any) {
+    teamEstimates = {
+        ...teamEstimates,
+        [msg.name]: msg.point,
+    };
+}
+
+export const start = (socketServer: SocketIO.Server) => {
+    socketServer.on("connection", (socket) => {
+        socket.on("join-team", (msg) => {
+            joinTheTeam(msg, socket);
+        });
+
+        socket.on("point-story", (msg) => {
+            pointTheStory(msg);
+
+            if (allVotesAreIn() && consensusReached()) {
+                socket.emit("estimation-completed", {estimate: teamEstimates[msg.name]})
+            } else if (allVotesAreIn()) {
+                socket.emit("consensus-not-reached", teamEstimates)
+            }
+
+            socket.emit("story-pointed", teamEstimates);
+        });
+    });
+};
