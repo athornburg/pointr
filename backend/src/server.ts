@@ -48,5 +48,16 @@ export const start = (socketServer: SocketIO.Server) => {
 
             socket.emit("story-pointed", teamEstimates);
         });
+
+        socket.on("point-another-story", () => {
+            Object.keys(teamEstimates).map(teamMember => {
+                teamEstimates = {
+                    ...teamEstimates,
+                    [teamMember]: null,
+                }
+            });
+
+            socket.emit("clear-points", teamEstimates)
+        })
     });
 };

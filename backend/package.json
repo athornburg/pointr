@@ -2,14 +2,14 @@
   "name": "pointr-backend",
   "version": "1.0.0",
   "description": "Remote estimation made easy",
-  "main": "index.js",
+  "main": "boot.js",
   "repository": "https://github.com/athornburg/pointr.git",
   "author": "Alex Thornburg",
   "license": "MIT",
   "scripts": {
     "test": "jest",
     "build": "webpack --mode production --config ./webpack.config.js",
-    "start": "webpack --mode production --config ./webpack.config.js && node dist/server.js"
+    "start": "webpack --mode production --config ./webpack.config.js && node dist/boot.js"
   },
   "dependencies": {
     "socket.io": "^2.3.0",

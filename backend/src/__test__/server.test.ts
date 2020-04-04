@@ -119,4 +119,22 @@ describe("server", () => {
             }
         );
     });
+
+    it('points another story', async () => {
+
+        client.emit("point-another-story");
+
+        const team = new Promise((resolve) => {
+            client.on('clear-points', (msg: any) => {
+                resolve(msg)
+            })
+        });
+
+        expect(await team).toEqual(
+            {
+                "alex": null,
+                "john": null,
+            }
+        );
+    });
 });

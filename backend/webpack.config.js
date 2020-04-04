@@ -1,6 +1,6 @@
 module.exports = {
     target: 'node',
-    entry: __dirname + '/src/server.ts',
+    entry: __dirname + '/src/boot.ts',
     externals: {
         uws: 'uws'
     },
@@ -10,7 +10,7 @@ module.exports = {
     },
     output: {
         path: __dirname + '/dist',
-        filename: "server.js"
+        filename: "boot.js"
     },
     resolve: {
         extensions: ['.js','.json', '.ts']
