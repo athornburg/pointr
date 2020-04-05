@@ -1,3 +1,3 @@
 export const conf = {
-    socketRoute: "http://localhost:3000",
+    socketRoute: "localhost:3000",
 };

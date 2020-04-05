@@ -1,3 +1,6 @@
+import {Socket} from "socket.io";
+import {Server} from "socket.io";
+
 type NameToPointer = { [index: string]: number };
 let teamEstimates: NameToPointer = {};
 
@@ -16,12 +19,13 @@ function allVotesAreIn() {
     return !Object.values(teamEstimates).includes(null);
 }
 
-function joinTheTeam(msg: any, socket: SocketIO.Socket) {
+function joinTheTeam(msg: any, socket: Socket, server: Server) {
     teamEstimates = {
         [msg.name]: null,
         ...teamEstimates,
     };
-    socket.emit("team-joined", teamEstimates)
+    socket.emit("team-joined", teamEstimates);
+    server.sockets.emit("team-updated", teamEstimates);
 }
 
 function pointTheStory(msg: any) {
@@ -31,22 +35,21 @@ function pointTheStory(msg: any) {
     };
 }
 
-export const start = (socketServer: SocketIO.Server) => {
+export const start = (socketServer: Server) => {
     socketServer.on("connection", (socket) => {
         socket.on("join-team", (msg) => {
-            joinTheTeam(msg, socket);
+            joinTheTeam(msg, socket, socketServer);
         });
 
         socket.on("point-story", (msg) => {
             pointTheStory(msg);
 
             if (allVotesAreIn() && consensusReached()) {
-                socket.emit("estimation-completed", {estimate: teamEstimates[msg.name]})
+                socketServer.sockets.emit("estimation-completed", {estimate: teamEstimates[msg.name]})
             } else if (allVotesAreIn()) {
-                socket.emit("consensus-not-reached", teamEstimates)
+                socketServer.sockets.emit("consensus-not-reached", teamEstimates)
             }
-
-            socket.emit("story-pointed", teamEstimates);
+            socketServer.sockets.emit("story-pointed", teamEstimates);
         });
 
         socket.on("point-another-story", () => {
@@ -57,7 +60,7 @@ export const start = (socketServer: SocketIO.Server) => {
                 }
             });
 
-            socket.emit("clear-points", teamEstimates)
+            socketServer.sockets.emit("clear-points", teamEstimates)
         })
     });
 };

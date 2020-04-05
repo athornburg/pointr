@@ -1,0 +1,4 @@
+applications:
+- name: pointr-backend
+  command: node dist/boot.js
+  health-check-type: process
